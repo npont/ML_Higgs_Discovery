@@ -1,6 +1,6 @@
 # Linear regression using gradient descent
-from implementations import *
-from helpers import * 
+from computations import *
+
 
 #Linear regression using gradient descent
 
