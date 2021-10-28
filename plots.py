@@ -3,6 +3,19 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+def plot_data(x_data,filepath,size1,size2):
+    """visualize input data as histograms -> to help in pre-processing steps."""
+    figure, axs = plt.subplots(size1,size2,figsize=(10,10))
+    iterator = 0
+    for i in range(size1):
+        for j in range(size2):
+            sns.histplot(x_data[:,iterator], ax = axs[i,j], bins = 23)
+            axs[i,j].set_title("Feature " + str(iterator))
+            axs[i,j].yaxis.set_visible(False)
+            iterator+=1
+    plt.tight_layout()
+    plt.savefig(filepath)
+    return str('save figure to ' + filepath)
 
 
 def cross_validation_visualization(lambds, mse_tr, mse_te):
