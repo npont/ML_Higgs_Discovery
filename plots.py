@@ -4,20 +4,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def standardize(x):
-    """Standardize the original data set."""
-    mean_x = np.mean(x, axis=0)
-    x = x - mean_x
-    std_x = np.std(x, axis=0)
-    x = x / std_x
-    return x, mean_x, std_x
 
-
-def de_standardize(x, mean_x, std_x):
-    """Reverse the procedure of standardization."""
-    x = x * std_x
-    x = x + mean_x
-    return x
+def cross_validation_visualization(lambds, mse_tr, mse_te):
+    """visualization the curves of mse_tr and mse_te."""
+    plt.semilogx(lambds, mse_tr, marker=".", color='b', label='train error')
+    plt.semilogx(lambds, mse_te, marker=".", color='r', label='test error')
+    plt.xlabel("lambda")
+    plt.ylabel("rmse")
+    plt.title("cross validation")
+    plt.legend(loc=2)
+    plt.grid(True)
+    plt.savefig("cross_validation")
 
 
 def visualization(y, x, mean_x, std_x, w, save_name, is_LR=False):
@@ -34,7 +31,8 @@ def visualization(y, x, mean_x, std_x, w, save_name, is_LR=False):
     fig.set_ylabel("y=Weight")
     fig.grid()
     
-    
+
+
     """"
     # plot raw data with decision boundary
     ax2 = fig.add_subplot(1, 2, 2) 
