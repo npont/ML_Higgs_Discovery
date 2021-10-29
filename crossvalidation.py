@@ -1,5 +1,6 @@
 import numpy as np
 from implementations import *
+from computations import *
 
 
 def build_k_indices(y, k_fold, seed):
@@ -57,9 +58,9 @@ def cross_validation_ridge(y, x, k_indices, k,degree,lambda_):
     
     #build polynome with corresponding degree to the corresponding feature identified by id_
     #least squares on tx_tr
-    x_train_pol = polynomial_expansion(x_tr[:,:19],degree)
+    x_train_pol = build_poly(x_tr[:,:19],degree)
     tx_tr = np.concatenate((x_train_pol,x_tr[:,19:]),axis = 1)
-    x_test_pol = polynomial_expansion(x_te[:,:19],degree)
+    x_test_pol = build_poly(x_te[:,:19],degree)
     tx_te = np.concatenate((x_test_pol,x_te[:,19:]),axis =1)
     
     w, loss_tr = ridge_regression(y_tr,tx_tr,lambda_)
@@ -70,16 +71,24 @@ def cross_validation_ridge(y, x, k_indices, k,degree,lambda_):
     return w,loss_tr, loss_te
 
 
-def add_degrees(x_train, x_test,id_,degree):
-    """adds x degrees to the feature identified by the index. """
-    augmented_x_train =build_poly(x_train[:,id_],degree)
-    
-    x_train = np.delete(x_train,id_,axis=1) #delete old single feature
-    x_train = np.concatenate((x_train,augmented_x_train),axis=1)
-    
-    augmented_x_test =build_poly(x_test[:,id_],degree)
-    
-    x_test = np.delete(x_test,id_,axis=1) #delete old single feature
-    x_test = np.concatenate((x_test,augmented_x_test),axis=1)
+def cross_validation_logistic(y, x, k_indices, k, lambda_,gamma,initial_w, max_iters, reg = False, SGD = False):
+    """randomly partitions the data into k folds groups to train and test data."""
+    stoch = SGD
+    te_index = k_indices[k]
+    tr_index = k_indices[~(np.arange(k_indices.shape[0])==k)]
+    tr_index = tr_index.reshape(-1)
 
-    return x_train, x_test
+    x_te = x[te_index]
+    y_te = y[te_index]
+    x_tr = x[tr_index]
+    y_tr = y[tr_index]
+    
+    if reg :
+        w,loss_tr = reg_logistic_regression(y_tr, x_tr, lambda_, initial_w, max_iters, gamma)
+        loss_te = logistic_loss_reg(y_te,x_te,w, lambda_)
+    else :
+        w, loss_tr = logistic_regression(y_tr, x_tr, initial_w, max_iters, gamma)
+        loss_te = logistic_loss(y_te, x_te, w)
+        
+    return w,loss_tr, loss_te
+

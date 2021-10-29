@@ -4,35 +4,39 @@ from implementations import *
 
 
 def compute_loss(y, tx, w):
-    e = y - np.matmul(tx,w)
-    loss = sum(e**2) / (2 * len(tx))
+    e = y - tx.dot(w)
+    loss = 1/2*np.mean(e**2)
     return loss
 
 def compute_gradient(y, tx, w):
     """Compute the gradient."""
-    e = y - np.matmul(tx,w)
-    gradient = - np.matmul(np.transpose(tx),e)/len(tx)
-    loss = sum(e**2) / (2 * len(tx))
-    return (loss, gradient)
+    e = y - tx.dot(w)
+    gradient = -tx.T.dot(e)/len(e)
+    return gradient
 
-def logistic_loss(y, tx, w):
-    """  
-    Calculate the negative loss likelihood.
-    Parameters
-    """
-    N = y.shape[0]
-    loss = 0
-    for i in range(N):
-        aux = np.dot(np.transpose(tx[i,:]),w)
-        loss = loss - (y[i]*np.log(sigmoid(aux)) + (1-y[i])*np.log(1-sigmoid(aux)))
-    return loss[0]
 
-def logistic_gradient(y, tx, w):
-    """
-    Compute the gradient for negative log likelihood.
-    Parameters
-    """
-    gradient = np.dot(np.transpose(tx), sigmoid(np.dot(tx,w)) - y)
+def logistic_loss(y,tx,w):
+    """Compute the loss by negative log likelihood for the logistic regression."""
+    pred = sigmoid(tx.dot(w)) 
+    y = y[:,np.newaxis]
+    return np.mean(np.log(1+np.exp(-np.multiply(y, pred))))
+
+
+def logistic_loss_reg(y,tx,w, lambda_):
+    """ Compute the loss by negative log likehlihood for the logistic regression with a
+    penalizing term"""
+
+    return logistic_loss(y,tx,w) + lambda_*np.squeeze(w.T.dot(w))
+
+def logistic_gradient(y,tx,w):
+    """ compute the gradient of logistic regression loss."""
+    pred = sigmoid(tx.dot(w))
+    gradient = tx.T.dot(pred-(y[:,np.newaxis]))
+    return gradient
+
+def logistic_gradient_reg(y, tx, w, lambda_):
+    """Computes the gradient for the regularized L2 logistic gradient descent"""
+    gradient = logistic_gradient(y, tx, w) + 2*lambda_*w
     return gradient
             
 def sigmoid(t):
