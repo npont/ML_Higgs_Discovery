@@ -1,5 +1,4 @@
-# ml-project-1-lpgsdesv
-ml-project-1-lpgsdesv created by GitHub Classroom
+# Machine Learning Project 1
 
 In 2013, the Higgs boson elementary particle was discovered at CERN. In this project, our goal is to recreate the discovery process, 
 by applying machine learning techniques to actual CERN particle accelerator data. 
