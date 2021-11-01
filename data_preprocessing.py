@@ -8,12 +8,10 @@ def data_preprocessing(x_train, x_test):
     missing_ids = discard_missing_features(x_train, threshold) #find indices of bad data
     x_train = select_good_features(x_train, missing_ids)
     x_test = select_good_features(x_test, missing_ids)
-
-    #x_train = replace_by_median(x_train)
-    #x_test = replace_by_median(x_test)
-            
-    cat_feat_id = 18
-    x_train, x_test = dummy_variables(x_train,x_test,cat_feat_id)
+    
+    #Create 4 dummy variables for the categorical data
+    #cat_feat_id = 18
+    #x_train, x_test = dummy_variables(x_train,x_test,cat_feat_id)
     
     x_train = standardization(x_train)
     x_test = standardization(x_test)
@@ -45,12 +43,6 @@ def dummy_variables(x_train, x_test, id_):
 def select_good_features(data_x, ids):
     """ return data thanks to the ids_missing list. """
     return data_x[:, ids]
-
-def replace_by_median(x, to_replace = -999):
-    """ replaces bad values (-999) of column id_ by the median.  """
-    for j in range(x.shape[1]):
-        x[:,j] = np.where(x[:,j] == to_replace, np.median(x[:,j]!=to_replace), x[:,j])
-    return x
 
 
 def discard_missing_features(data_x, threshold):
