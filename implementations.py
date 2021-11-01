@@ -25,16 +25,12 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     Linear regression using stochastic gradient descent.
     Parameters
     """
-    ws = [initial_w]
-    losses = []
     w = initial_w
     for n_iter in range(max_iters):
-        for batch_y, batch_tx in batch_iter(y, tx, batch_size = 100):
+        for batch_y, batch_tx in batch_iter(y, tx, batch_size = 1):
             gradient = compute_gradient(batch_y, batch_tx, w)
             loss = compute_loss(batch_y, batch_tx, w)
             w = w - gradient * gamma
-            ws.append(w)
-            losses.append(loss)
 
     return w, loss
 
